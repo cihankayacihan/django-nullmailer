@@ -8,6 +8,18 @@ NULLMAILER_SPOOLDIR = getattr(settings, 'NULLMAILER_SPOOLDIR', '/var/spool/nullm
 
 __nullmailer_threads_dict__ = {}
 
+def to_utf8(addr):
+    # RFC 6531 says that unicode email addresses must be encoded as utf8.
+    # Also, according to this stackoverflow answer, if we have an unicode
+    # email address, the only reasonable thing to do is to encode in utf8 and
+    # hope that the target SMTP supports RFC 6531:
+    #
+    #  https://tools.ietf.org/html/rfc6531
+    #  http://stackoverflow.com/a/14778640
+    if isinstance(addr, unicode):
+        return addr.encode('utf-8')
+    return addr
+
 class EmailBackend(BaseEmailBackend):
 
     __queue__ = "%s/queue" % NULLMAILER_SPOOLDIR
@@ -21,8 +33,9 @@ class EmailBackend(BaseEmailBackend):
         if not email_messages:
             return
         for email_message in email_messages:
-            to_lines = '\n'.join(email_message.to)
-            msg = "%s\n%s\n\n%s" % ( email_message.from_email, to_lines, email_message.message().as_string())
+            from_email = to_utf8(email_message.from_email)
+            to_lines = '\n'.join([to_utf8(addr) for addr in email_message.to])
+            msg = "%s\n%s\n\n%s" % ( from_email, to_lines, email_message.message().as_string())
             if self._send(msg, pid, tid):
                 num_sent += 1
         return num_sent
