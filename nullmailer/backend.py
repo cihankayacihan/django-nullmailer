@@ -58,7 +58,7 @@ class EmailBackend(BaseEmailBackend):
         fd = -1
         try:
             fd = os.open(self.__trigger__, os.O_WRONLY|os.O_NONBLOCK)
-            os.write(fd, "\0")
+            os.write(fd, b"\0")
         finally:
             if fd > -1: os.close(fd)
 
