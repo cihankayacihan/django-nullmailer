@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(
     name='django-nullmailer',
-    version='0.2',
+    version='0.3',
     author='20Tab S.r.l.',
     author_email='info@20tab.com',
     description='A django EMAIL_BACKEND for enqueuing mail in nullmailer spool system.',
