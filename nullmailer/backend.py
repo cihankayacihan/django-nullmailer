@@ -33,8 +33,12 @@ class EmailBackend(BaseEmailBackend):
         if not email_messages:
             return
         for email_message in email_messages:
+            to = email_message.to
+            cc = email_message.cc or []
+            bcc = email_message.bcc or []
+            recipients = to + cc + bcc
             from_email = to_utf8(email_message.from_email)
-            to_lines = '\n'.join([to_utf8(addr) for addr in email_message.to])
+            to_lines = '\n'.join([to_utf8(addr) for addr in recipients])
             msg = "%s\n%s\n\n%s" % ( from_email, to_lines, email_message.message().as_string())
             if self._send(msg, pid, tid):
                 num_sent += 1
