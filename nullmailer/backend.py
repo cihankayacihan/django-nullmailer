@@ -16,7 +16,7 @@ def to_utf8(addr):
     #
     #  https://tools.ietf.org/html/rfc6531
     #  http://stackoverflow.com/a/14778640
-    if isinstance(addr, unicode):
+    if isinstance(addr, str):
         return addr.encode('utf-8')
     return addr
 
