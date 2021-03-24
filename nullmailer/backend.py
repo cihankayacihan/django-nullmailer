@@ -38,7 +38,7 @@ class EmailBackend(BaseEmailBackend):
             bcc = email_message.bcc or []
             recipients = to + cc + bcc
             from_email = to_utf8(email_message.from_email)
-            to_lines = '\n'.join([to_utf8(addr) for addr in recipients])
+            to_lines = '\n'.join(recipients)
             msg = "%s\n%s\n\n%s" % ( from_email, to_lines, email_message.message().as_string())
             if self._send(msg, pid, tid):
                 num_sent += 1
