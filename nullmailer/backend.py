@@ -16,8 +16,8 @@ def to_utf8(addr):
     #
     #  https://tools.ietf.org/html/rfc6531
     #  http://stackoverflow.com/a/14778640
-    if isinstance(addr, str):
-        return addr.encode('utf-8')
+    if isinstance(addr, bytes):
+        return addr.encode('utf8')
     return addr
 
 class EmailBackend(BaseEmailBackend):
@@ -38,7 +38,7 @@ class EmailBackend(BaseEmailBackend):
             bcc = email_message.bcc or []
             recipients = to + cc + bcc
             from_email = to_utf8(email_message.from_email)
-            to_lines = '\n'.join(recipients)
+            to_lines = '\n'.join([to_utf8(addr) for addr in email_message.to])
             msg = "%s\n%s\n\n%s" % ( from_email, to_lines, email_message.message().as_string())
             if self._send(msg, pid, tid):
                 num_sent += 1
